@@ -31,5 +31,14 @@ notationRouter.post('/', imagesUpload.single('image'), async (req, res, next) =>
   }
 });
 
+notationRouter.get('/', async (req, res, next) => {
+  try {
+    const fileContent = await fs.readFile(filename);
+    data = JSON.parse(fileContent.toString());
+    res.send(data);
+  } catch (error) {
+    next(error)
+  }
+});
 
 export default notationRouter;
