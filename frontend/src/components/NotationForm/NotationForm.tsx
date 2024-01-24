@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { NewNotation } from '../../types';
 import { useAppDispatch } from '../../app/hooks';
-import { createNotation } from '../../store/notation/notationThunk';
+import { createNotation, getNotations } from '../../store/notation/notationThunk';
 
 const NotationForm = () => {
   const [notation, setNotation] = useState<NewNotation>({
@@ -41,22 +41,51 @@ const NotationForm = () => {
   const createNotationHandler = async (event: React.FormEvent) => {
     event.preventDefault();
     await dispatch(createNotation(notation));
+    await dispatch(getNotations());
+  };
+
+  const clearImageField = () => {
+    setFilename('');
+    setNotation(prevState => ({
+      ...prevState,
+      image: null
+    }));
   };
 
   return (
-    <form onSubmit={createNotationHandler}>
-      <div>
-        <input type="text" value={notation.author} onChange={changeNotation} name="author"/>
+    <form className="flex gap-y-2 flex-col w-[500px]" onSubmit={createNotationHandler}>
+      <div className="flex gap-x-3 justify-between">
+        <p className="bg-[#EEAA88] text-[#600000] p-[3px]">Author:</p>
+        <input className="w-full border-gray-500 border" type="text" value={notation.author} onChange={changeNotation}
+               name="author"/>
       </div>
-      <div>
-        <input type="text" value={notation.message} onChange={changeNotation} name="message"/>
+      <div className="flex gap-x-3 justify-between">
+        <p className="bg-[#EEAA88] text-[#600000] p-[3px]">Message:</p>
+        <input className="w-full border-gray-500 border" required type="text" value={notation.message}
+               onChange={changeNotation} name="message"/>
       </div>
-      <div>
-        <input className="hidden" ref={imageSelect} type="file" name="image" onChange={changeImageFiled}/>
-        <p>{filename}</p>
-        <button onClick={selectImage} type="button">browse</button>
+      <div className="flex gap-x-3 items-center">
+        <p className="bg-[#EEAA88] text-[#600000] p-[3px]">File</p>
+        <div className="flex flex-col w-full">
+          <input className="hidden" ref={imageSelect} type="file" name="image" onChange={changeImageFiled}/>
+          {
+            filename.length === 0 ?
+              <button
+                className="border border-gray-500 border-dashed"
+                onClick={selectImage}
+                type="button"
+              >
+                browse
+              </button>
+              :
+              <div className="flex justify-between">
+                <p>{filename}</p>
+                <button onClick={clearImageField}>x</button>
+              </div>
+          }
+        </div>
       </div>
-      <button type="submit">post</button>
+      <button className="bg-green-400 py-[5px] capitalize" type="submit">post</button>
     </form>
   );
 };

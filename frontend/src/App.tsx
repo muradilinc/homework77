@@ -1,9 +1,10 @@
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { selectNotations } from './store/notation/notationSlice';
-import { useEffect } from 'react';
 import { getNotations } from './store/notation/notationThunk';
 import NotationForm from './components/NotationForm/NotationForm';
-import { BASE_URL } from './constants';
+import NotationItem from './components/NotationItem/NotationItem';
+import Layout from './components/Layout/Layout';
 
 const App = () => {
   const notations = useAppSelector(selectNotations);
@@ -13,26 +14,16 @@ const App = () => {
     dispatch(getNotations());
   }, [dispatch]);
 
-  console.log(notations);
   return (
-    <div>
-      <NotationForm/>
-      <div>
-        {notations.map(notation =>
-          <div key={notation.id}>
-            {
-              notation.image ?
-                <img src={BASE_URL + '/' + notation.image} alt="notationImage"/>
-                :
-                null
-            }
-            <p>{notation.author}</p>
-            <p>{notation.message}</p>
-            <p>{notation.datetime}</p>
-          </div>
-        )}
+    <Layout>
+      <div className="flex justify-center items-center h-[200px] border-b-[3px] border-b-[#f0e0d6]">
+        <NotationForm/>
       </div>
-    </div>
+      <div className="my-10">
+        {
+          notations.map(notation => <NotationItem key={notation.id} notation={notation}/>)}
+      </div>
+    </Layout>
   );
 };
 

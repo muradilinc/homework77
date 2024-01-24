@@ -7,9 +7,13 @@ export const createNotation = createAsyncThunk<void, NewNotation>(
   async (notation) => {
     const formData = new FormData();
     formData.append('message', notation.message);
-    if (notation.image && notation.author) {
-      formData.append('image', notation.image);
+
+    if (notation.author) {
       formData.append('author', notation.author);
+    }
+
+    if (notation.image) {
+      formData.append('image', notation.image);
     }
 
     await axiosApi.post('/notations', formData);
