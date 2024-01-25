@@ -1,7 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { NewNotation } from '../../types';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { createNotation, getNotations } from '../../store/notation/notationThunk';
+import { selectCreateNotationLoading } from '../../store/notation/notationSlice';
+import { ButtonLoader } from '../Loader/ButtonLoader';
 
 const NotationForm = () => {
   const [notation, setNotation] = useState<NewNotation>({
@@ -12,6 +14,7 @@ const NotationForm = () => {
   const [filename, setFilename] = useState('');
   const imageSelect = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
+  const createLoading = useAppSelector(selectCreateNotationLoading);
 
   const changeNotation = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
@@ -85,7 +88,12 @@ const NotationForm = () => {
           }
         </div>
       </div>
-      <button className="bg-green-400 py-[5px] capitalize" type="submit">post</button>
+      {
+        createLoading ?
+          <ButtonLoader/>
+          :
+          <button className="bg-green-400 py-[5px] capitalize" type="submit">post</button>
+      }
     </form>
   );
 };

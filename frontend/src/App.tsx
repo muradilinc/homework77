@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { selectNotations } from './store/notation/notationSlice';
+import { selectGetNotationsLoading, selectNotations } from './store/notation/notationSlice';
 import { getNotations } from './store/notation/notationThunk';
 import NotationForm from './components/NotationForm/NotationForm';
 import NotationItem from './components/NotationItem/NotationItem';
 import Layout from './components/Layout/Layout';
+import Loader from './components/Loader/Loader';
 
 const App = () => {
   const notations = useAppSelector(selectNotations);
   const dispatch = useAppDispatch();
+  const loading = useAppSelector(selectGetNotationsLoading);
 
   useEffect(() => {
     dispatch(getNotations());
@@ -21,7 +23,11 @@ const App = () => {
       </div>
       <div className="my-10">
         {
-          notations.map(notation => <NotationItem key={notation.id} notation={notation}/>)}
+          loading ?
+            <Loader/>
+            :
+            notations.map(notation => <NotationItem key={notation.id} notation={notation}/>)
+        }
       </div>
     </Layout>
   );
