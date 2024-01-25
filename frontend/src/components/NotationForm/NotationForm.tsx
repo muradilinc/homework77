@@ -45,6 +45,12 @@ const NotationForm = () => {
     event.preventDefault();
     await dispatch(createNotation(notation));
     await dispatch(getNotations());
+    setNotation({
+      author: '',
+      message: '',
+      image: null,
+    });
+    setFilename('');
   };
 
   const clearImageField = () => {
